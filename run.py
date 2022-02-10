@@ -12,10 +12,6 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("love_sandwiches")
 
-# sales = SHEET.worksheet("sales")
-# data = sales.get_all_values()
-# print(data)
-
 
 def get_sales_data():
     """
@@ -134,7 +130,7 @@ def calculate_stock_data(data):
     print("Calculating stock data...\n")
     new_stock_data = []
     for column in data:
-        # Covert each str in column to an int, and add to a list. Ignoring
+        # Convert each str in column to an int, and add to a list. Ignoring
         # empty values so the list size is accurate fo the later calculations.
         int_column = [int(num) for num in column if num != ""]
         average = sum(int_column) / len(int_column)
