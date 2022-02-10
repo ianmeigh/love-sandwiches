@@ -46,12 +46,15 @@ def validate_data(values):
     """
     try:
         values = [int(value) for value in values]
-        if len(values) != 6:
+        number_of_columns = get_num_columns_per_worksheet("sales")
+
+        if len(values) != number_of_columns:
             raise ValueError(
-                f"Exactly 6 values required, you provided {len(values)}"
+                f"Exactly {number_of_columns} values required "
+                f"you provided {len(values)}"
             )
     except ValueError as e:
-        print(f"Invalid data: {e}, please try again")
+        print(f"Invalid data: {e}, please try again\n")
         return False
     else:
         return True
@@ -103,7 +106,7 @@ def get_last_5_entries_sales():
     """
 
     sales = SHEET.worksheet("sales")
-    number_of_columns = len(sales.row_values(1))
+    number_of_columns = get_num_columns_per_worksheet("sales")
 
     columns = []
     for i in range(1, number_of_columns + 1):
@@ -113,6 +116,15 @@ def get_last_5_entries_sales():
         columns.append(last_5_entries)
 
     return columns
+
+
+def get_num_columns_per_worksheet(worksheet):
+    """
+    Get the number of columns from the specified worksheet, allowing
+    new sandwich types to be added.
+    """
+    worksheet_to_check = SHEET.worksheet(worksheet)
+    return len(worksheet_to_check.row_values(1))
 
 
 def main():
