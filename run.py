@@ -37,6 +37,15 @@ def get_sales_data():
     return sales_data
 
 
+def get_num_columns_in_worksheet(worksheet):
+    """
+    Get the number of columns from the specified worksheet, allowing
+    new sandwich types to be added.
+    """
+    worksheet_to_check = SHEET.worksheet(worksheet)
+    return len(worksheet_to_check.row_values(1))
+
+
 def validate_data(values):
     """
     Get sales figures input from the user.
@@ -118,13 +127,21 @@ def get_last_5_entries_sales():
     return columns
 
 
-def get_num_columns_in_worksheet(worksheet):
+def calculate_stock_data(data):
     """
-    Get the number of columns from the specified worksheet, allowing
-    new sandwich types to be added.
+    Calculate the average stock for each item type, adding 10%
     """
-    worksheet_to_check = SHEET.worksheet(worksheet)
-    return len(worksheet_to_check.row_values(1))
+    print("Calculating stock data...\n")
+    new_stock_data = []
+    for column in data:
+        # Covert each str in column to an int, and add to a list. Ignoring
+        # empty values so the list size is accurate fo the later calculations.
+        int_column = [int(num) for num in column if num != ""]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append(round(stock_num))
+
+    return new_stock_data
 
 
 def main():
@@ -136,9 +153,10 @@ def main():
     update_worksheet(sales_data, "sales")
     new_surplus_data = calculate_surplus_data(sales_data)
     update_worksheet(new_surplus_data, "surplus")
+    sales_columns = get_last_5_entries_sales()
+    stock_data = calculate_stock_data(sales_columns)
+    update_worksheet(stock_data, "stock")
 
 
 print("Welcome to Love Sandwiches Data Automation\n")
-# main()
-sales_columns = get_last_5_entries_sales()
-pprint(sales_columns)
+main()
